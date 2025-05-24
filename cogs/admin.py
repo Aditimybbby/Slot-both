@@ -58,13 +58,11 @@ class AdminCog(commands.Cog):
         await db.add_slot(guild.id, channel.id, member.id, slot_name, duration)
 
         rule_embed = discord.Embed(title="Slot rules", colour=rand_colour())
-        rule_embed.description = (
-            "• Max **2** `@here` pings per day.
-"
-            "• **NO** `@everyone` pings.
-"
-            "• Follow staff instructions."
-        )
+rule_embed.description = (
+    "• Max **2** `@here` pings per day.\n"
+    "• **NO** `@everyone` pings.\n"
+    "• Follow staff instructions."
+)
         await channel.send(member.mention, embed=rule_embed)
 
         await member.send(
