@@ -37,24 +37,6 @@ async def on_ready():
     print(f"[READY] Logged in as {bot.user} ({bot.user.id})")
 
 # custom help that matches the spec ------------------------------------------------
-@bot.command(name="help")
-@is_admin()
-async def _help(ctx):
-    from discord import Embed
-    embed = Embed(title=f"Hey {ctx.author.display_name}! Here are my commands:",
-                  colour=rand_colour())
-    embed.add_field(name=",create  <@user> <duration>",
-                    value="Create a slot channel for a user. Leave args blank for interactive mode.",
-                    inline=False)
-    embed.add_field(name=",status [#channel]",
-                    value="Show status of the current or specified slot.", inline=False)
-    embed.add_field(name=",transfer <@new_owner> (run inside slot)",
-                    value="Transfer control of the slot to another user.", inline=False)
-    embed.add_field(name=",revoke <channel-id>",
-                    value="Revoke (delete) a slot channel after confirmation.", inline=False)
-    embed.add_field(name=",revoke  <channel‑ID>",
-                    value="Delete a slot channel after confirmation.", inline=False)
-    await ctx.send(embed=embed, delete_after=60)
 
 # ---------------------------------------------------------------------------
 async def setup_cogs():
