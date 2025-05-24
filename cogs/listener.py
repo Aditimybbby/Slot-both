@@ -37,7 +37,7 @@ class KeepDeleteView(discord.ui.View):
             await cog._hard_delete(channel, "Owner chose delete", interaction.user)
         self.stop()
 
-  class PingListener(commands.Cog):
+class PingListener(commands.Cog):
     """Listens for @here/@everyone misuse and handles automatic revocation."""
     def __init__(self, bot):
         self.bot = bot
@@ -69,7 +69,6 @@ class KeepDeleteView(discord.ui.View):
         if count > LIMIT_PER_DAY:
             await self._ask_owners(message.channel, message.author, "Exceeded @here limit")
 
-    # ---------------------------------------------------------------------
     async def _ask_owners(self, channel: discord.TextChannel, offender: discord.Member, reason: str):
         """Send owners a keep/delete decision card."""
         view = KeepDeleteView(self.bot, channel.id)
@@ -85,3 +84,4 @@ class KeepDeleteView(discord.ui.View):
                 await owner.send(embed=embed, view=view)
 
         await channel.send("🚫 Slot temporarily locked pending owner decision.")
+            
