@@ -1,5 +1,4 @@
 import asyncio
-import os
 import discord
 from discord.ext import commands
 import database as db
@@ -116,6 +115,21 @@ class AdminCog(commands.Cog):
         await self._hard_delete(channel, reason, ctx.author)
 
     # ----------------------------------------------------------
+    async def _hard_delete(self, channel: discord.TextChannel, reason: str, actor):
+        slot = await db.get_slot_by_channel(channel.id)
+        if slot:
+            owner = channel.guild.get_member(slot[3])
+            if owner:
+                # Send revocation notice via DM
+                await owner.send(
+                    f"❌ Your slot **{channel.name}** was revoked.\n"
+                    f"Reason: {reason}\n"
+                    f"By: {actor}"
+                )
+        await db.remove_slot(channel.id)
+        await channel.delete(reason=reason)
+
+    # ----------------------------------------------------------
     @commands.command(name="status")
     async def slot_status(self, ctx, channel: discord.TextChannel | None = None):
         """Show info about this slot or another specified slot."""
@@ -167,22 +181,7 @@ class AdminCog(commands.Cog):
             f"🎁 You have been given control of slot **{ctx.channel.name}**"
         )
 
-    # ----------------------------------------------------------
-    async def _hard_delete(self, channel: discord.TextChannel, reason: str, actor):
-        slot = await db.get_slot_by_channel(channel.id)
-        if slot:
-            owner = channel.guild.get_member(slot[3])
-            if owner:
-                # Send revocation notice via DM
-                await owner.send(
-                    f"❌ Your slot **{channel.name}** was revoked.\n"
-                    f"Reason: {reason}\n"
-                    f"By: {actor}"
-                )
-        await db.remove_slot(channel.id)
-        await channel.delete(reason=reason)
-
-async def setup(bot: commands.Bot):
+async def setup(bot):
     """Cog entry-point for setups."""
     await bot.add_cog(AdminCog(bot))
-                
+        
