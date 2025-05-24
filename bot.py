@@ -5,10 +5,10 @@ from random import randint
 import database as db
 
 # ----- Configuration (hard-coded!) -----------------------------------------
-TOKEN       = "MTEzOTg2NTY5NzQwMTQ1MDUxNg.GncFs-.Jie29HHgEnGTTMIPtlfNVPUbo5htOKJAW7Or9E"  # ← put your full bot token here
+TOKEN       = "YOUR_FULL_BOT_TOKEN_HERE"
 CATEGORY_ID = 123456789012345678  # ← your channel category ID
-OWNER_IDS   = [111111111111111111, 222222222222222222]  # ← your Discord user IDs
-ADMIN_ROLES = [333333333333333333, 444444444444444444]  # ← role IDs that count as “admin”
+OWNER_IDS   = [111111111111111111, 222222222222222222]
+ADMIN_ROLES = [333333333333333333, 444444444444444444]
 
 # ----- Bot Setup -----------------------------------------------------------
 intents = Intents.default()
@@ -34,20 +34,19 @@ class SlotBot(commands.Bot):
     async def setup_hook(self):
         # 1) Initialize your database
         await db.init_db()
-        # 2) Load all your cogs here
+        # 2) Load all your cogs
         from cogs.admin    import AdminCog
         from cogs.listener import PingListener
 
-        await self.add_cog(AdminCog(self, rand_colour))
-        await self.add_cog(PingListener(self, rand_colour))
+        # Note: AdminCog and PingListener only take `bot` now
+        await self.add_cog(AdminCog(self))
+        await self.add_cog(PingListener(self))
 
 bot = SlotBot()
 
 @bot.event
 async def on_ready():
     print(f"[READY] Logged in as {bot.user} ({bot.user.id})")
-
-# If you have custom help or other events, put them below
 
 if __name__ == "__main__":
     bot.run(TOKEN)
