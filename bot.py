@@ -14,6 +14,7 @@ TIMEZONE_OFFSET = +5.5  # Asia/Kolkata offset from UTC
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=BOT_PREFIX, intents=intents, help_command=None)
+bot.remove_command('help')  # ← ensure no existing help command remains
 
 # In-memory slot registry
 # slot_data: {
