@@ -4,6 +4,7 @@ from discord import Embed
 import random
 import asyncio
 from datetime import datetime, timedelta
+import re
 
 # Bot setup
 intents = discord.Intents.default()
@@ -57,6 +58,15 @@ async def create(ctx):
         return msg.author == ctx.author
     owner_msg = await bot.wait_for('message', check=check)
 
+    # Extract user ID from the mention string
+    user_id_match = re.search(r'\d+', owner_msg.content)
+    if user_id_match:
+        user_id = int(user_id_match.group(0))
+        member = await ctx.guild.fetch_member(user_id)
+    else:
+        await ctx.send("Invalid username or ID format.")
+        return
+
     # Step 2: Ask for slot duration
     await ctx.send(embed=create_embed("Step 2", "Enter the slot duration (e.g., 1h, 1d, 1m):"))
     duration_msg = await bot.wait_for('message', check=check)
@@ -72,7 +82,6 @@ async def create(ctx):
     channel = await ctx.guild.create_text_channel(slot_name, category=category)
 
     # Assign permissions to the owner
-    member = await ctx.guild.fetch_member(int(owner_msg.content))
     await channel.set_permissions(member, send_messages=True, mention_everyone=False)
 
     # Generate key (a simple random string for now, could be encoded)
